@@ -15,8 +15,6 @@ import {
 
 const taskRouter = express.Router();
 
-// Initialize AuthService
-
 taskRouter.get("/", getTasksController);
 
 taskRouter.post(

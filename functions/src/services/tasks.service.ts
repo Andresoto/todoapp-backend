@@ -1,4 +1,5 @@
 import { db } from "../config/firebase";
+import { FieldValue } from "firebase-admin/firestore";
 
 export class TasksService {
   private static instance: TasksService;
@@ -28,7 +29,8 @@ export class TasksService {
   async addTask(userId: string, taskData: any) {
     try {
       const taskRef = db.collection("tasks").doc();
-      await taskRef.set({ userId, ...taskData });
+      const createAt = FieldValue.serverTimestamp();
+      await taskRef.set({ userId, createAt,...taskData });
       return { id: taskRef.id, ...taskData };
     } catch (error) {
       console.error("Error adding task:", error);
@@ -39,6 +41,8 @@ export class TasksService {
   async updateTask(taskId: string, taskData: any) {
     try {
       const taskRef = db.collection("tasks").doc(taskId);
+      const updateAt = FieldValue.serverTimestamp();
+      taskData.updateAt = updateAt;
       await taskRef.update(taskData);
       return { id: taskId, ...taskData };
     } catch (error) {

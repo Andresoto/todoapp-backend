@@ -11,8 +11,9 @@ import {setGlobalOptions} from "firebase-functions";
 import {onRequest} from "firebase-functions/https";
 import express from "express";
 import cors from "cors";
-import authRouter from "./routes/auth.router";
-import taskRouter from "./routes/tasks.router";
+import authRouter from "./api/routes/auth.router";
+import taskRouter from "./api/routes/tasks.router";
+import { registerErrorHandlers } from "./api/middlewares/error.handler";
 
 setGlobalOptions({ maxInstances: 10 });
 
@@ -25,6 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
-app.use('/tasks', taskRouter)
+app.use('/tasks', taskRouter);
+
+registerErrorHandlers(app);
 
 export const api = onRequest(app);

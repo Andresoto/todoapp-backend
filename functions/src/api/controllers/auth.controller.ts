@@ -11,7 +11,7 @@ export const loginController = (req: Request, res: Response) => {
       if (data) {
         res.status(200).json(data);
       } else {
-        res.status(204);
+        res.status(204).send();
       }
     })
     .catch((error) => {

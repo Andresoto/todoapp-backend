@@ -1,3 +1,3 @@
 export interface RequestValidator<T = any> {
-  validateWithSchema(data: T): void | Promise<void>;
+  validateWithSchema(data: T): any | Promise<any>;
 }

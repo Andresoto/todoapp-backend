@@ -11,13 +11,6 @@ export const errorHandler: ErrorRequestHandler = (err: any, req: Request, res: R
   const message = err.message || 'Internal Server Error';
   const details = err.details || [];
 
-  if (status === 400) {
-    return res.status(404).json({
-      message: "Resource not found",
-      details: [],
-    });
-  }
-
   if( err instanceof HttpError) {
     return res.status(status).json({
       message: err.message,

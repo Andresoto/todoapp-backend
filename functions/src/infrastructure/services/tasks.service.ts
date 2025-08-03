@@ -1,7 +1,9 @@
 import { db } from "../config/firebase";
 import { FieldValue } from "firebase-admin/firestore";
+import { ITasksService } from "./interfaces/tasks.interface";
+import { Task } from "../../domain/entities/task";
 
-export class TasksService {
+export class TasksService implements ITasksService {
   private static instance: TasksService;
 
   private constructor() {}
@@ -18,6 +20,7 @@ export class TasksService {
       const tasksSnapshot = await db
         .collection("tasks")
         .where("userId", "==", userId)
+        .orderBy("createdAt", "desc")
         .get();
       return tasksSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -26,24 +29,26 @@ export class TasksService {
     }
   }
 
-  async addTask(userId: string, taskData: any) {
+  async addTask(userId: string, taskData: Task) {
     try {
       const taskRef = db.collection("tasks").doc();
-      const createAt = FieldValue.serverTimestamp();
-      await taskRef.set({ userId, createAt,...taskData });
-      return { id: taskRef.id, ...taskData };
+      const createdAt = FieldValue.serverTimestamp();
+      taskData.createdAt = createdAt;
+      taskData.completed = false;
+      await taskRef.set({ ...taskData, userId });
+      return { id: taskRef.id, ...taskData, userId };
     } catch (error) {
       console.error("Error adding task:", error);
       throw new Error("Failed to add task");
     }
   }
 
-  async updateTask(taskId: string, taskData: any) {
+  async updateTask(taskId: string, taskData: Task) {
     try {
       const taskRef = db.collection("tasks").doc(taskId);
       const updateAt = FieldValue.serverTimestamp();
-      taskData.updateAt = updateAt;
-      await taskRef.update(taskData);
+      taskData.updatedAt = updateAt;
+      await taskRef.update(taskData as any);
       return { id: taskId, ...taskData };
     } catch (error) {
       console.error("Error updating task:", error);

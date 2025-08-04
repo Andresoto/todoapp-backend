@@ -11,7 +11,7 @@ export const getTasksSchema = Joi.object({
 
 export const createTaskSchema = Joi.object({
   title: title.required(),
-  description: description.required(),
+  description: description.optional(),
   completed: completed.optional(),
 });
 

@@ -4,7 +4,7 @@ import { TasksController } from "../controllers/tasks.controller";
 import {
   createTaskSchema,
   updateTaskSchema,
-} from "../../shared/schemas/task.schema";
+} from "../schemas/task.schema";
 
 const taskRouter = express.Router();
 
